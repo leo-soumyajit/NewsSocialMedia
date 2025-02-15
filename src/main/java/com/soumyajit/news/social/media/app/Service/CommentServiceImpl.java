@@ -4,12 +4,15 @@ import com.soumyajit.news.social.media.app.Dtos.CommentDtos;
 import com.soumyajit.news.social.media.app.Dtos.CommentRequestDtos;
 import com.soumyajit.news.social.media.app.Entities.Comments;
 import com.soumyajit.news.social.media.app.Entities.Post;
+import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
+import com.soumyajit.news.social.media.app.Exception.UnAuthorizedException;
 import com.soumyajit.news.social.media.app.Repository.CommentRepository;
 import com.soumyajit.news.social.media.app.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +29,13 @@ public class CommentServiceImpl implements CommentService {
         log.info("Adding comments in a Post with Id :{}",postId);
         Post post = postRepository.findById(postId)
                 .orElseThrow(()->new ResourceNotFound("Post not found with Id : "+postId));
+
+        //get Authenticated User
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Comments comments = modelMapper.map(commentRequestDtos,Comments.class);
-        comments.setPost(post);
+        comments.setPost_id(post);
+        comments.setUser_id(user);
         post.getComments().add(comments);
         comments = commentRepository.save(comments);
         postRepository.save(post);
@@ -42,9 +50,19 @@ public class CommentServiceImpl implements CommentService {
         Comments comments = commentRepository.findById(commentId)
                 .orElseThrow(()->new ResourceNotFound("Comment not found with Id : "+commentId));
 
-        if(!comments.getPost().getId().equals(postId)){
+        User user = getCurrentUser();
+
+        if(!comments.getUser_id().getId().equals(user.getId())){
+            if( !comments.getPost_id().getUser_id().getId().equals(user.getId())) {
+                throw new RuntimeException("Comment does not belong to the user with name : " + user.getName() +
+                        " id : " + user.getId());
+            }
+        }
+
+        if(!comments.getPost_id().getId().equals(postId)){
             throw new RuntimeException("Comment does not belong to the specified post");
         }
+
         post.getComments().remove(comments); //delete from post's comment
         commentRepository.deleteById(commentId);
         postRepository.save(post);
@@ -59,7 +77,13 @@ public class CommentServiceImpl implements CommentService {
         Comments comments = commentRepository.findById(commentId)
                 .orElseThrow(()->new ResourceNotFound("Comment not found with Id : "+commentId));
 
-        if(!comments.getPost().getId().equals(postId)){
+        User user = getCurrentUser();
+        if(!comments.getUser_id().getId().equals(user.getId())){
+            throw new RuntimeException("Comment does not belong to the user with name : "+user.getName()+
+                    " id : "+user.getId());
+        }
+
+        if(!comments.getPost_id().getId().equals(postId)){
             throw new RuntimeException("Comment does not belong to the specified post");
         }
 
@@ -70,5 +94,8 @@ public class CommentServiceImpl implements CommentService {
         return modelMapper.map(comments,CommentDtos.class);
     }
 
+    private User getCurrentUser(){
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 }

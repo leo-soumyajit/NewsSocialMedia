@@ -13,6 +13,6 @@ public class CommentDtos {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
-    //private Long userId;
+    private String userName;
     private Long postId;
 }

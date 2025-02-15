@@ -7,6 +7,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class CommentRequestDtos {
-    private String content;
+public class LoginDTOS {
+    private String email;
+    private String password;
 }
