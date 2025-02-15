@@ -26,22 +26,21 @@ public class Post {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
     @ElementCollection
-    private String[] images;
+    @OrderColumn(name = "images_order")
+    @Column(nullable = false)
+    private List<String> images;
 
     private Long likes;
 
-    @Column(nullable = false)
-    @ElementCollection
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post_id", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments;
 
-    //    @ManyToOne
-    //    @JoinColumn(name = "user_id")
-    //    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user_id;
 
-        @CreationTimestamp
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp

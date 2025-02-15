@@ -17,10 +17,11 @@ public class PostDto {
     private Long id;
     private String title;
     private String description;
-    private String[] images;
-    //private User user;
+    private List<String> images;
+    @JsonIgnore
+    private User user;
     private Long likes;
     @CreationTimestamp
     private LocalDateTime createdAt;
-    private List<Comments> comments;
+    private List<CommentDtos> comments;
 }

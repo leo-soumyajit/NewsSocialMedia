@@ -23,20 +23,18 @@ public class Comments {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user_id;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "post_id")
-    private Post post;
+    @JsonIgnore
+    private Post post_id;
 }
