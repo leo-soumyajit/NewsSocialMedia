@@ -34,7 +34,7 @@ public class Post {
 
     @Column(nullable = false)
     @ElementCollection
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments;
 
     //    @ManyToOne

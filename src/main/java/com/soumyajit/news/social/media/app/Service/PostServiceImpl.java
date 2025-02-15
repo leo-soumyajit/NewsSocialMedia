@@ -6,6 +6,7 @@ import com.soumyajit.news.social.media.app.Dtos.PostDto;
 import com.soumyajit.news.social.media.app.Dtos.PostRequestDtos;
 import com.soumyajit.news.social.media.app.Entities.Post;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
+import com.soumyajit.news.social.media.app.Repository.CommentRepository;
 import com.soumyajit.news.social.media.app.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class PostServiceImpl implements PostService{
 
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
+    private final CommentRepository commentRepository;
 
     @Override
     public PostDto createPost(PostRequestDtos postRequestDtos) {
