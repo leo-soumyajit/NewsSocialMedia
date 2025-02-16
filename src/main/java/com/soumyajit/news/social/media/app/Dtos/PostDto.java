@@ -18,8 +18,7 @@ public class PostDto {
     private String title;
     private String description;
     private List<String> images;
-    @JsonIgnore
-    private User user;
+    private String userName;
     private Long likes;
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -8,6 +8,7 @@ import com.soumyajit.news.social.media.app.Dtos.UserDTOS;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,13 +32,13 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDTOS> signUp(@RequestBody SignUpRequestDTOS signUpRequestDTOS){
+    public ResponseEntity<UserDTOS> signUp(@Valid @RequestBody SignUpRequestDTOS signUpRequestDTOS){
         return new ResponseEntity<>(authService.signUp(signUpRequestDTOS), HttpStatus.CREATED);
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTOS loginDTOS ,
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTOS loginDTOS ,
                                                   HttpServletRequest request ,
                                                   HttpServletResponse response){
         String[] tokens = authService.login(loginDTOS); //get the tokens
