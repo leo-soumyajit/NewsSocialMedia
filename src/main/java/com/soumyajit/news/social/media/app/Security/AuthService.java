@@ -91,7 +91,7 @@ public class AuthService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(signUpRequestDTOS.getEmail());
         message.setSubject("Welcome Message");
-        message.setText("Welcome to our website");
+        message.setText("Welcome To Our Website Dear "+signUpRequestDTOS.getName());
         mailSender.send(message);
     }
 
