@@ -4,6 +4,7 @@ import com.soumyajit.news.social.media.app.Dtos.CommentDtos;
 import com.soumyajit.news.social.media.app.Dtos.CommentRequestDtos;
 import com.soumyajit.news.social.media.app.Dtos.PostDto;
 import com.soumyajit.news.social.media.app.Dtos.PostRequestDtos;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -21,4 +22,5 @@ public interface PostService {
     void deletePostById(Long postId);
 
 
+    List<PostDto> searchPosts(String keyword);
 }

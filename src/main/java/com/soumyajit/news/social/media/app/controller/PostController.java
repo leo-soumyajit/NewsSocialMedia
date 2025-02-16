@@ -46,5 +46,9 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<PostDto>>searchPosts(@RequestParam String keyword){
+        return ResponseEntity.ok(postService.searchPosts(keyword));
+    }
 
 }

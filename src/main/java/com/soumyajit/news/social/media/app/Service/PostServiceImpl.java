@@ -118,6 +118,15 @@ public class PostServiceImpl implements PostService{
         postRepository.deleteById(postId);
     }
 
+    @Override
+    public List<PostDto> searchPosts(String keyword) {
+        List<Post> posts = postRepository.
+                findByTitleContainingOrDescriptionContaining(keyword,keyword);
+        return posts.stream()
+                .map(post -> modelMapper.map(post,PostDto.class))
+                .collect(Collectors.toList());
+    }
+
 
     //get Authenticated User
     private User getCurrentUser(){
