@@ -42,6 +42,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         //.requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/password-reset/**").permitAll()
+                        .requestMatchers("/otp/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
                         .anyRequest().authenticated()
                 )
