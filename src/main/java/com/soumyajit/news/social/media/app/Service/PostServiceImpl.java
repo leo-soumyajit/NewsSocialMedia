@@ -70,13 +70,54 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostDto postLikeById(Long postId) {
-        log.info("Creating Like of a Post with id:{}" ,postId);
+        log.info("Liking post with id: {}", postId);
         Post post = postRepository.findById(postId)
-                .orElseThrow(()->new ResourceNotFound("Post not found with Id : "+postId));
-        post.setLikes(post.getLikes()+1);
+                .orElseThrow(() -> new ResourceNotFound("Post not found with Id: " + postId));
+
+        User user = getCurrentUser();
+
+        // Check if the user has already liked this particular post
+        if (user.getLikedPostIds().contains(postId)) {
+            throw new RuntimeException("User has already liked this post");
+        }
+
+        // Add like and increment like count
+        post.setLikes(post.getLikes() + 1);
+        user.getLikedPostIds().add(postId);
+
         Post savedPost = postRepository.save(post);
-        return modelMapper.map(savedPost,PostDto.class);
+        userRepository.save(user);
+
+        return modelMapper.map(savedPost, PostDto.class);
     }
+
+
+    @Override
+    public PostDto removeLikeById(Long postId) {
+        log.info("Removing like from post with id: {}", postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFound("Post not found with Id: " + postId));
+
+        User user = getCurrentUser();
+
+        // Check if the user has not liked this particular post
+        if (!user.getLikedPostIds().contains(postId)) {
+            throw new RuntimeException("User has not liked this post");
+        }
+
+        // Remove like and decrement like count
+        post.setLikes(post.getLikes() - 1);
+        user.getLikedPostIds().remove(postId);
+
+        Post savedPost = postRepository.save(post);
+        userRepository.save(user);
+
+        return modelMapper.map(savedPost, PostDto.class);
+    }
+
+
+
+
 
     @Override
     @Transactional
@@ -120,12 +161,14 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<PostDto> searchPosts(String keyword) {
+        log.info("Searching post with keyword : {}" ,keyword);
         List<Post> posts = postRepository.
                 findByTitleContainingOrDescriptionContaining(keyword,keyword);
         return posts.stream()
                 .map(post -> modelMapper.map(post,PostDto.class))
                 .collect(Collectors.toList());
     }
+
 
 
     //get Authenticated User

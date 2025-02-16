@@ -23,4 +23,6 @@ public interface PostService {
 
 
     List<PostDto> searchPosts(String keyword);
+
+    PostDto removeLikeById(Long postId);
 }
