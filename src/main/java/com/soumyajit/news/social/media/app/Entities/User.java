@@ -56,6 +56,10 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Long> likedPostIds = new HashSet<>();
 
+    private String bio;
+
+    private String profileImage;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -19,8 +19,8 @@ public class PostDto {
     private String description;
     private List<String> images;
     private String userName;
+    private Long userId;
     private Long likes;
-    @CreationTimestamp
     private LocalDateTime createdAt;
     private List<CommentDtos> comments;
 }

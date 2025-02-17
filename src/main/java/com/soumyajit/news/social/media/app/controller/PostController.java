@@ -28,6 +28,7 @@ public class PostController {
     }
 
     @GetMapping()
+   // @CrossOrigin(origins = "http://localhost:63342")
     public ResponseEntity<List<PostDto>> getAllPost(){
         return ResponseEntity.ok(postService.getAllPosts());
     }
