@@ -41,11 +41,14 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth->auth
                         //.requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/password-reset/**").permitAll()
-                        .requestMatchers("/otp/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/password-reset/**").permitAll()
+//                        .requestMatchers("/otp/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/posts/**").permitAll()
+                                .requestMatchers("/posts/**").authenticated()
+                                .requestMatchers("/comments/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .exceptionHandling(exceptionHandlingConfig ->
                         exceptionHandlingConfig.accessDeniedHandler(accessDeniedHandler())); //handle AccessDenied Exceptions

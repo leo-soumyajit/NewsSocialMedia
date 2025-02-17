@@ -14,9 +14,11 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000") // Replace with your frontend URL
+                        //.allowedOrigins("http://localhost:8000") // Allow React app to access
+                        .allowedOrigins("https://swaggger-news-socialmediaapp.netlify.app/") // Allow all origins for testing; restrict as needed
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
