@@ -1,5 +1,6 @@
 package com.soumyajit.news.social.media.app.Service;
 
+import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
 import com.soumyajit.news.social.media.app.Repository.UserRepository;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("User not found with id: " + id));
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

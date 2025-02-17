@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,14 @@ public class UserProfileServiceImpl implements UserProfileService{
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFound("User not found with this id "+userId));
         return modelMapper.map(user,UserProfileDTOS.class);
+    }
+
+    @Override
+    public List<UserProfileDTOS> searchUserByName(String name) {
+        List<User> user = userRepository.findByNameContainingIgnoreCase(name);
+        return user.stream()
+                .map(user1 -> modelMapper.map(user1, UserProfileDTOS.class))
+                .collect(Collectors.toList());
     }
 
 }
