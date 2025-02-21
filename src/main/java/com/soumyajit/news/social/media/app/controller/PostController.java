@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,9 +19,11 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/createPost")
-    public ResponseEntity<PostDto> createPost(@RequestBody PostRequestDtos postRequestDtos){
-        return ResponseEntity.ok(postService.createPost(postRequestDtos));
+    @PostMapping(value = "/createPost", consumes = {"multipart/form-data"})
+    public ResponseEntity<PostDto> createPost(@RequestParam("title") String title,
+                                              @RequestParam("description") String description,
+                                              @RequestParam(value = "imageFiles", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(postService.createPost(title, description, images));
     }
 
     @GetMapping("/{postId}")
@@ -44,9 +48,12 @@ public class PostController {
     }
 
 
-    @PutMapping("/{postId}/update")
-    public ResponseEntity<PostDto> updatePostById(@PathVariable Long postId,@RequestBody PostRequestDtos postRequestDtos){
-        return ResponseEntity.ok(postService.updatePostById(postId,postRequestDtos));
+    @PutMapping(value = "/{postId}/update" ,consumes = {"multipart/form-data"})
+    public ResponseEntity<PostDto> updatePostById(@PathVariable Long postId,
+                                                  @RequestParam("title") String title,
+                                                  @RequestParam("description") String description,
+                                                  @RequestParam(value = "imageFiles", required = false) List<MultipartFile> images) throws IOException {
+        return ResponseEntity.ok(postService.updatePostById(postId,title,description,images));
     }
     @DeleteMapping("/{postId}/delete")
     public ResponseEntity<Void> deletePostById(@PathVariable Long postId){

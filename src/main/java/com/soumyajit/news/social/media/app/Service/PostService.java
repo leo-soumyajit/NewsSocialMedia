@@ -5,11 +5,13 @@ import com.soumyajit.news.social.media.app.Dtos.CommentRequestDtos;
 import com.soumyajit.news.social.media.app.Dtos.PostDto;
 import com.soumyajit.news.social.media.app.Dtos.PostRequestDtos;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface PostService {
-    PostDto createPost(PostRequestDtos postDto);
+    PostDto createPost(String title ,  String description ,List<MultipartFile> imageFiles) throws IOException;
 
     PostDto getPostById(Long postId);
 
@@ -17,7 +19,7 @@ public interface PostService {
 
     PostDto postLikeById(Long postId);
 
-    PostDto updatePostById(Long postId,PostRequestDtos postRequestDtos);
+    PostDto updatePostById(Long postId,String title ,  String description,List<MultipartFile> imageFiles) throws IOException;
 
     void deletePostById(Long postId);
 

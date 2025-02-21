@@ -6,7 +6,9 @@ import com.soumyajit.news.social.media.app.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +26,11 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.getUserProfile(userId));
     }
 
-    @PatchMapping("/update/{userId}")
-    public ResponseEntity<UserProfileDTOS> updateUserProfile(@PathVariable Long userId, @RequestBody Map<String, Object> updates) {
-
-        return ResponseEntity.ok(userProfileService.updateUserProfile(userId,updates));
+    @PatchMapping(value = "/update/{userId}",consumes = {"multipart/form-data"})
+    public ResponseEntity<UserProfileDTOS> updateUserProfile(@PathVariable Long userId,
+                                                             @RequestParam Map<String, Object> updates,
+                                                             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) throws IOException {
+        return ResponseEntity.ok(userProfileService.updateUserProfile(userId, updates, profilePicture));
     }
 
     @GetMapping("/search")

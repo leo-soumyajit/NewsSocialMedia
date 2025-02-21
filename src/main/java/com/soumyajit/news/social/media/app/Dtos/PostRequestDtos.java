@@ -12,5 +12,4 @@ import java.util.List;
 public class PostRequestDtos {
     private String title;
     private String description;
-    private List<String> images;
 }
