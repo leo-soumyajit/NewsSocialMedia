@@ -36,6 +36,7 @@ public class PostController {
     public ResponseEntity<List<PostDto>> getAllPost(){
         return ResponseEntity.ok(postService.getAllPosts());
     }
+
     @PostMapping("/{postId}/like")
     public ResponseEntity<PostDto> postLikeById(@PathVariable Long postId){
         return ResponseEntity.ok(postService.postLikeById(postId));

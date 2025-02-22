@@ -78,9 +78,9 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<PostDto> getAllPosts() {
         log.info("Getting All Posts ");
-        List<Post> post = postRepository.findAll();
-        return post.stream().
-                map(post1 -> modelMapper.map(post1, PostDto.class))
+        List<Post> post = postRepository.findAllPostsOrderedByCreationDateDesc();
+        return post.stream()
+                .map(post1 -> modelMapper.map(post1, PostDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -189,7 +189,7 @@ public class PostServiceImpl implements PostService{
     public List<PostDto> searchPosts(String keyword) {
         log.info("Searching post with keyword : {}" ,keyword);
         List<Post> posts = postRepository.
-                findByTitleContainingOrDescriptionContaining(keyword,keyword);
+                findByTitleContainingOrDescriptionContainingOrderByCreationDateDesc(keyword,keyword);
         return posts.stream()
                 .map(post -> modelMapper.map(post,PostDto.class))
                 .collect(Collectors.toList());
