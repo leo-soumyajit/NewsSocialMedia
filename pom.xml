@@ -167,6 +167,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>news-app</finalName>
 	</build>
 
 </project>
