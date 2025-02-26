@@ -1,7 +1,10 @@
 services:
   - type: web
-    name: news-app
-    env: java
-    buildCommand: "mvn clean install"
+    name: news-social-media-app
+    env: custom
+    buildCommand: |
+      sudo apt-get update -y
+      sudo apt-get install -y openjdk-21-jdk
+      mvn clean install
     startCommand: "java -jar target/news-social-media-app-0.0.1-SNAPSHOT.jar"
     plan: free
