@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: news-social-media-app
+    name: news-app
     env: java
     buildCommand: "mvn clean install"
     startCommand: "java -jar target/news-social-media-app-0.0.1-SNAPSHOT.jar"
