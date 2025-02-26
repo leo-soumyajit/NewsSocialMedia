@@ -146,10 +146,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version> <!-- Ensure this supports Java 21 -->
+				<version>3.8.1</version> <!-- Ensure this supports Java 21 -->
 				<configuration>
-					<source>23</source>
-					<target>23</target>
+					<source>21</source>
+					<target>21</target>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
