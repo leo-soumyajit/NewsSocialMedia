@@ -6,11 +6,11 @@ phases:
       java: corretto21
   build:
     commands:
-      - echo Building, Testing and packaging the application...
-      - mvn packege
+      - echo "Building, Testing and packaging the application..."
+      - mvn package
   post_build:
     commands:
-      - echo Building, Testing and packaging the application.
+      - echo "Build, Testing, and packaging completed."
 artifacts:
   files:
     - target/*.jar
