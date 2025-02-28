@@ -1,13 +1,10 @@
 package com.soumyajit.news.social.media.app.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.soumyajit.news.social.media.app.Entities.Enums.Roles;
-import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jdbc.core.JdbcAggregateOperations;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

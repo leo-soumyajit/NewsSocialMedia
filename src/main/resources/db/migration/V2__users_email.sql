@@ -1,0 +1,1 @@
+ALTER TABLE users RENAME COLUMN email to user_email;

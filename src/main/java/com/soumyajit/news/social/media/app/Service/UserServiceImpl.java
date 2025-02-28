@@ -1,6 +1,5 @@
 package com.soumyajit.news.social.media.app.Service;
 
-import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
 import com.soumyajit.news.social.media.app.Repository.UserRepository;
