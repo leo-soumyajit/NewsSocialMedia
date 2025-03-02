@@ -87,7 +87,7 @@
 
 
 
-<!--	dependecies for mail service-->
+		<!--	dependecies for mail service-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -160,7 +160,7 @@
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId><!-- Ensure this is the latest version -->
+							<artifactId>lombok</artifactId>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -179,6 +179,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

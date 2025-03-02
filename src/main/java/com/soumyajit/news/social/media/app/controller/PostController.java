@@ -1,10 +1,8 @@
 package com.soumyajit.news.social.media.app.controller;
 
 import com.soumyajit.news.social.media.app.Dtos.PostDto;
-import com.soumyajit.news.social.media.app.Dtos.PostRequestDtos;
 import com.soumyajit.news.social.media.app.Service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

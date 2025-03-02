@@ -6,7 +6,6 @@ import com.soumyajit.news.social.media.app.Entities.Comments;
 import com.soumyajit.news.social.media.app.Entities.Post;
 import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
-import com.soumyajit.news.social.media.app.Exception.UnAuthorizedException;
 import com.soumyajit.news.social.media.app.Repository.CommentRepository;
 import com.soumyajit.news.social.media.app.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;

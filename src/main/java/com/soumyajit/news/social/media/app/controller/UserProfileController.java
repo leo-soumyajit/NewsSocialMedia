@@ -2,7 +2,6 @@ package com.soumyajit.news.social.media.app.controller;
 
 import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Service.UserProfileService;
-import com.soumyajit.news.social.media.app.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

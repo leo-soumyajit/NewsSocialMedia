@@ -1,5 +1,6 @@
 package com.soumyajit.news.social.media.app.Security;
 
+import com.soumyajit.news.social.media.app.Dtos.LoginResponseDTO;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
 import com.soumyajit.news.social.media.app.Dtos.LoginDTOS;
 import com.soumyajit.news.social.media.app.Dtos.SignUpRequestDTOS;
@@ -63,17 +64,16 @@ public class AuthService {
     }
 
 
-    public String[] login(LoginDTOS loginDTOS){
+    public LoginResponseDTO login(LoginDTOS loginDTOS){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTOS.getEmail(),loginDTOS.getPassword())
         );
-        User user = (User) authentication.getPrincipal();
-        String[] arr = new String[2];
-        String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-        arr[0] = accessToken; //1st one is accessToken
-        arr[1] = refreshToken; // 2nd one is refreshToken
-        return arr;
+
+        User userEntities = (User) authentication.getPrincipal();
+        String accessToken = jwtService.generateAccessToken(userEntities);
+        String refreshToken = jwtService.generateRefreshToken(userEntities);
+
+        return new LoginResponseDTO(userEntities.getId(),accessToken,refreshToken);
 
     }
     public String refreshToken(String refreshToken) { //refreshToken method

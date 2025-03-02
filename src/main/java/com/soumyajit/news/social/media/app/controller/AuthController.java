@@ -41,13 +41,14 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTOS loginDTOS ,
                                                   HttpServletRequest request ,
                                                   HttpServletResponse response){
-        String[] tokens = authService.login(loginDTOS); //get the tokens
-        Cookie cookie = new Cookie("refreshToken",tokens[1]); // add the refreshToken inside the cookie only
+        LoginResponseDTO loginResponseDTO =  authService.login(loginDTOS);
+        Cookie cookie = new Cookie("refreshToken", loginResponseDTO.getRefreshToken());
         cookie.setHttpOnly(true);
 
         cookie.setSecure("production".equals(deployEnv)); // when its on production mode it is true else development mode its false
+
         response.addCookie(cookie);
-        return ResponseEntity.ok(new LoginResponseDTO(tokens[0])); // return the access token which is String[0]
+        return ResponseEntity.ok(loginResponseDTO);
     }
 
 

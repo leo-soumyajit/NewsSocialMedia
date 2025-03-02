@@ -1,10 +1,6 @@
 package com.soumyajit.news.social.media.app.Service;
 
-import com.soumyajit.news.social.media.app.Dtos.CommentDtos;
-import com.soumyajit.news.social.media.app.Dtos.CommentRequestDtos;
 import com.soumyajit.news.social.media.app.Dtos.PostDto;
-import com.soumyajit.news.social.media.app.Dtos.PostRequestDtos;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
