@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserProfileService {
-    UserProfileDTOS updateUserProfile(Long userId, Map<String, Object> updates, MultipartFile image) throws IOException;
+    UserProfileDTOS updateUserProfile(Map<String, Object> updates, MultipartFile image) throws IOException;
 
     UserProfileDTOS getUserProfile(Long userId);
 

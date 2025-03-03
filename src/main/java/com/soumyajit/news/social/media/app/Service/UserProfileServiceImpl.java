@@ -30,18 +30,9 @@ public class UserProfileServiceImpl implements UserProfileService{
 
 
     @Transactional
-    public UserProfileDTOS updateUserProfile(Long userId, Map<String, Object> updates, MultipartFile profilePicture) throws IOException {
+    public UserProfileDTOS updateUserProfile(Map<String, Object> updates, MultipartFile profilePicture) throws IOException {
         // Get the currently authenticated user
-        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Fetch the user profile to be updated
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFound("User not found with this id " + userId));
-
-        // Check if the authenticated user is the owner of the profile
-        if (!user.getId().equals(authenticatedUser.getId())) {
-            throw new RuntimeException("This is not your profile; you can't update this profile");
-        }
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         List<String> restrictedFields = Arrays.asList("email", "password");
 

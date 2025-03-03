@@ -25,11 +25,11 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileService.getUserProfile(userId));
     }
 
-    @PatchMapping(value = "/update/{userId}",consumes = {"multipart/form-data"})
-    public ResponseEntity<UserProfileDTOS> updateUserProfile(@PathVariable Long userId,
-                                                             @RequestParam Map<String, Object> updates,
+
+    @PatchMapping(value = "/update",consumes = {"multipart/form-data"})
+    public ResponseEntity<UserProfileDTOS> updateUserProfile(@RequestParam Map<String, Object> updates,
                                                              @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) throws IOException {
-        return ResponseEntity.ok(userProfileService.updateUserProfile(userId, updates, profilePicture));
+        return ResponseEntity.ok(userProfileService.updateUserProfile(updates, profilePicture));
     }
 
     @GetMapping("/search")
