@@ -12,6 +12,10 @@ import com.soumyajit.news.social.media.app.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +30,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PostServiceImpl implements PostService{
+public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final Cloudinary cloudinary;
+    private final CacheManager cacheManager;
 
 
     @Override
@@ -39,7 +44,6 @@ public class PostServiceImpl implements PostService{
     public PostDto createPost(String title, String description, List<MultipartFile> images) throws IOException {
         List<String> imageUrls = new ArrayList<>();
 
-        // Upload images to Cloudinary and get URLs
         if (images != null) {
             for (MultipartFile file : images) {
                 Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
@@ -49,33 +53,41 @@ public class PostServiceImpl implements PostService{
             }
         }
 
-        // Create and populate the Post entity
         Post post = new Post();
         post.setTitle(title);
         post.setDescription(description);
         post.setLikes(0L);
-        post.setComments(new ArrayList<>()); // Initialize as an empty list
-        post.setImages(imageUrls); // Set image URLs
+        post.setComments(new ArrayList<>());
+        post.setImages(imageUrls);
 
-        // Get the currently authenticated user
-        User user = getCurrentUserWithPosts(); // Fetch user with posts collection
+        User user = getCurrentUserWithPosts();
         post.setUser_id(user);
 
-        // Save the post
         Post savedPost = postRepository.save(post);
+        PostDto postDto = modelMapper.map(savedPost, PostDto.class);
 
-        return modelMapper.map(savedPost, PostDto.class);
+        // Put individual post into cache
+        cacheManager.getCache("posts").put(savedPost.getId(), postDto);
+
+        // Evict cached post list
+        cacheManager.getCache("postList").clear();
+
+        return postDto;
     }
 
+
+
     @Override
+    @Cacheable(value = "posts", key = "#postId")
     public PostDto getPostById(Long postId) {
-        log.info("Getting Post with id:{}" ,postId);
+        log.info("Getting Post with id: {}", postId);
         Post post = postRepository.findById(postId)
-                .orElseThrow(()->new ResourceNotFound("Post not found with Id : "+postId));
-        return modelMapper.map(post,PostDto.class);
+                .orElseThrow(() -> new ResourceNotFound("Post not found with Id : " + postId));
+        return modelMapper.map(post, PostDto.class);
     }
 
     @Override
+    @Cacheable(value = "postList")
     public List<PostDto> getAllPosts() {
         log.info("Getting All Posts ");
         List<Post> post = postRepository.findAllPostsOrderedByCreationDateDesc();
@@ -85,6 +97,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public PostDto postLikeById(Long postId) {
         log.info("Liking post with id: {}", postId);
         Post post = postRepository.findById(postId)
@@ -92,12 +109,10 @@ public class PostServiceImpl implements PostService{
 
         User user = getCurrentUser();
 
-        // Check if the user has already liked this particular post
         if (user.getLikedPostIds().contains(postId)) {
             throw new RuntimeException("User has already liked this post");
         }
 
-        // Add like and increment like count
         post.setLikes(post.getLikes() + 1);
         user.getLikedPostIds().add(postId);
 
@@ -107,8 +122,12 @@ public class PostServiceImpl implements PostService{
         return modelMapper.map(savedPost, PostDto.class);
     }
 
-
     @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public PostDto removeLikeById(Long postId) {
         log.info("Removing like from post with id: {}", postId);
         Post post = postRepository.findById(postId)
@@ -116,12 +135,10 @@ public class PostServiceImpl implements PostService{
 
         User user = getCurrentUser();
 
-        // Check if the user has not liked this particular post
         if (!user.getLikedPostIds().contains(postId)) {
             throw new RuntimeException("User has not liked this post");
         }
 
-        // Remove like and decrement like count
         post.setLikes(post.getLikes() - 1);
         user.getLikedPostIds().remove(postId);
 
@@ -131,19 +148,18 @@ public class PostServiceImpl implements PostService{
         return modelMapper.map(savedPost, PostDto.class);
     }
 
-
-
-
-
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public PostDto updatePostById(Long postId, String title, String description, List<MultipartFile> images) throws IOException {
         log.info("Updating Post with id: {}", postId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("Post not found with Id: " + postId));
 
-        // Get the currently authenticated user
         User user = getCurrentUser();
 
         if (!user.getId().equals(post.getUser_id().getId())) {
@@ -151,26 +167,40 @@ public class PostServiceImpl implements PostService{
         }
 
         List<String> imageUrls = new ArrayList<>();
-        // Upload images to Cloudinary and get URLs
         if (images != null) {
             for (MultipartFile file : images) {
                 Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
                 String imageUrl = uploadResult.get("url").toString();
-                log.info("Updated image URL: {}", imageUrl);
                 imageUrls.add(imageUrl);
             }
         }
 
         post.setTitle(title);
         post.setDescription(description);
-        post.setImages(imageUrls); // Set image URLs
-        post.setLikes(post.getLikes());
+        post.setImages(imageUrls);
+
         Post updatedPost = postRepository.save(post);
-        return modelMapper.map(updatedPost, PostDto.class);
+        PostDto postDto = modelMapper.map(updatedPost, PostDto.class);
+
+        //Force re-cache
+        if (cacheManager.getCache("posts") != null) {
+            cacheManager.getCache("posts").put(updatedPost.getId(), postDto);
+            log.info("Manually cached updated post with ID: {}", updatedPost.getId());
+        } else {
+            log.warn("Cache 'posts' not found");
+        }
+
+        return postDto;
     }
+
+
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public void deletePostById(Long postId) {
         log.info("Deleting Post with id: {}", postId);
         Post post = postRepository.findById(postId)
@@ -187,26 +217,21 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<PostDto> searchPosts(String keyword) {
-        log.info("Searching post with keyword : {}" ,keyword);
-        List<Post> posts = postRepository.
-                findByTitleContainingOrDescriptionContainingOrderByCreationDateDesc(keyword,keyword);
+        log.info("Searching post with keyword : {}", keyword);
+        List<Post> posts = postRepository
+                .findByTitleContainingOrDescriptionContainingOrderByCreationDateDesc(keyword, keyword);
         return posts.stream()
-                .map(post -> modelMapper.map(post,PostDto.class))
+                .map(post -> modelMapper.map(post, PostDto.class))
                 .collect(Collectors.toList());
     }
 
-
-
-    //get Authenticated User
-    private User getCurrentUser(){
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //this way we can get the authenticated user everyTime
+    private User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @Transactional(readOnly = true)
     private User getCurrentUserWithPosts() {
         User currentUser = getCurrentUser();
-        // Fetch user with posts collection initialized
         return userRepository.findByIdWithPosts(currentUser.getId()).orElseThrow(() -> new ResourceNotFound("User not found"));
     }
-
 }
