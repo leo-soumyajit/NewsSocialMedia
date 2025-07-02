@@ -10,7 +10,7 @@ import java.util.Map;
 public interface UserProfileService {
     UserProfileDTOS updateUserProfile(Map<String, Object> updates, MultipartFile image) throws IOException;
 
-    UserProfileDTOS getUserProfile(Long userId);
+    public UserProfileDTOS getCurrentUserProfile(String username);
 
     List<UserProfileDTOS> searchUserByName(String name);
 }

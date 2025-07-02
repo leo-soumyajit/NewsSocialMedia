@@ -4,6 +4,7 @@ import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +20,13 @@ public class UserProfileController {
 
 
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileDTOS> getUserProfile(@PathVariable Long userId) {
-
-        return ResponseEntity.ok(userProfileService.getUserProfile(userId));
+    @GetMapping()
+    public ResponseEntity<UserProfileDTOS> getUserProfile() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(userProfileService.getCurrentUserProfile(username));
     }
+
+
 
 
     @PatchMapping(value = "/update",consumes = {"multipart/form-data"})

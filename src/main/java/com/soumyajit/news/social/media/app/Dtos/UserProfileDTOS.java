@@ -8,6 +8,7 @@ import java.util.List;
 public class UserProfileDTOS {
     private Long id;
     private String userName;
+    private String email;
     private List<ProfilePostDTOS> postsList;
     private String bio;
     private String profileImage;

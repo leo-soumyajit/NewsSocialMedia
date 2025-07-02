@@ -9,6 +9,8 @@ import com.soumyajit.news.social.media.app.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,14 +31,12 @@ public class UserProfileServiceImpl implements UserProfileService{
     private final Cloudinary cloudinary;
 
 
-    @Transactional
+    @CacheEvict(value = "userProfiles", key = "#result.email", condition = "#result != null")
     public UserProfileDTOS updateUserProfile(Map<String, Object> updates, MultipartFile profilePicture) throws IOException {
-        // Get the currently authenticated user
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         List<String> restrictedFields = Arrays.asList("email", "password");
 
-        // Update the profile with the provided updates using ReflectionUtils
         updates.forEach((key, value) -> {
             if (restrictedFields.contains(key)) {
                 throw new IllegalArgumentException("email and password cannot be updated through this method");
@@ -46,24 +46,24 @@ public class UserProfileServiceImpl implements UserProfileService{
             ReflectionUtils.setField(fieldToBeSaved, user, value);
         });
 
-        // Handle profile picture upload to Cloudinary
         if (profilePicture != null && !profilePicture.isEmpty()) {
             Map uploadResult = cloudinary.uploader().upload(profilePicture.getBytes(), ObjectUtils.emptyMap());
             String profilePictureUrl = uploadResult.get("url").toString();
             user.setProfileImage(profilePictureUrl);
         }
 
-        // Save the updated user profile
         User updatedUser = userRepository.save(user);
         return modelMapper.map(updatedUser, UserProfileDTOS.class);
     }
 
     @Override
-    public UserProfileDTOS getUserProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new ResourceNotFound("User not found with this id "+userId));
-        return modelMapper.map(user,UserProfileDTOS.class);
+    @Cacheable(value = "userProfiles", key = "#username")
+    public UserProfileDTOS getCurrentUserProfile(String username) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new ResourceNotFound("User not found with username " + username));
+        return modelMapper.map(user, UserProfileDTOS.class);
     }
+
 
     @Override
     public List<UserProfileDTOS> searchUserByName(String name) {
