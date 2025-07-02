@@ -11,8 +11,11 @@ import com.soumyajit.news.social.media.app.Repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,24 +27,35 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public CommentDtos addComment(CommentRequestDtos commentRequestDtos, Long postId) {
-        log.info("Adding comments in a Post with Id :{}",postId);
+        log.info("Adding comments in a Post with Id :{}", postId);
         Post post = postRepository.findById(postId)
-                .orElseThrow(()->new ResourceNotFound("Post not found with Id : "+postId));
+                .orElseThrow(() -> new ResourceNotFound("Post not found with Id : " + postId));
 
-        //get Authenticated User
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Comments comments = modelMapper.map(commentRequestDtos,Comments.class);
+        Comments comments = modelMapper.map(commentRequestDtos, Comments.class);
         comments.setPost_id(post);
         comments.setUser_id(user);
         post.getComments().add(comments);
         comments = commentRepository.save(comments);
         postRepository.save(post);
-        return modelMapper.map(comments,CommentDtos.class);
+
+        return modelMapper.map(comments, CommentDtos.class);
     }
 
+
+
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public void deleteComment(Long postId, Long commentId) {
         log.info("Deleting comments in a Post with Id :{}",postId);
         Post post = postRepository.findById(postId)
@@ -68,6 +82,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "#postId"),
+            @CacheEvict(value = "postList", allEntries = true)
+    })
     public CommentDtos updateComment(CommentRequestDtos commentRequestDtos, Long postId, Long commentId) {
         log.info("Updating comments in a Post with Id :{}",postId);
 
