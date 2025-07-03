@@ -24,7 +24,7 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false,columnDefinition = "LONGTEXT")
+    @Column(nullable = false,columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection
