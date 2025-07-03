@@ -9,11 +9,14 @@ import com.soumyajit.news.social.media.app.Entities.Enums.Roles;
 import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Repository.UserRepository;
 import com.soumyajit.news.social.media.app.Security.OTPServiceAndValidation.OtpService;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.InternetAddress;
 import java.util.Optional;
 import java.util.Set;
 
@@ -86,13 +90,95 @@ public class AuthService {
 
     }
 
-    private void sendWelcomeEmail(SignUpRequestDTOS signUpRequestDTOS){
-        //Send welcome message to user
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(signUpRequestDTOS.getEmail());
-        message.setSubject("Welcome Message");
-        message.setText("Welcome To Our Website Dear "+signUpRequestDTOS.getName());
-        mailSender.send(message);
+    @Async
+    private void sendWelcomeEmail(SignUpRequestDTOS signUpRequestDTOS) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            String htmlTemplate = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                .email-container {
+                    font-family: Arial, sans-serif;
+                    max-width: 600px;
+                    margin: auto;
+                    background: #ffffff;
+                    border-radius: 12px;
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+                    padding: 30px;
+                    color: #333333;
+                }
+                .header {
+                    text-align: center;
+                    color: #4A90E2;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 12px 24px;
+                    background: linear-gradient(to right, #4A90E2, #357ABD);
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 8px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+                .footer {
+                    font-size: 12px;
+                    color: #999999;
+                    text-align: center;
+                    margin-top: 40px;
+                    border-top: 1px solid #eeeeee;
+                    padding-top: 20px;
+                }
+            </style>
+        </head>
+        <body style="background-color:#f5f7fb;">
+            <div class="email-container">
+                <h2 class="header">🎉 Welcome to Newsly!</h2>
+                <p style="text-align:center; font-size: 16px;">Your social hub for the latest news 📰</p>
+
+                <p>Hi <strong>{{name}}</strong>,</p>
+
+                <p>Welcome to <strong>Newsly</strong>! We're happy to have you on board. This is a place to discover and share the latest updates happening around the world.</p>
+
+                <ul>
+                    <li>📰 Post and discover current events</li>
+                    <li>📢 Share your views</li>
+                    <li>👥 Connect with the community</li>
+                </ul>
+
+                <p>Start your journey now:</p>
+                <a class="button" href="https://newsly.com">🌐 Explore Newsly</a>
+
+                <p style="margin-top: 30px;">Cheers,<br>The Newsly Team 💙</p>
+
+                <div class="footer">
+                    You received this email because you joined Newsly.<br>
+                    If you didn’t sign up, you can safely ignore this message.
+                </div>
+            </div>
+        </body>
+        </html>
+        """;
+
+            String htmlContent = htmlTemplate.replace("{{name}}", signUpRequestDTOS.getName());
+
+            helper.setTo(signUpRequestDTOS.getEmail());
+            helper.setSubject("🎉 Welcome to Newsly!");
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+            System.out.println("✅ Welcome email sent successfully to: " + signUpRequestDTOS.getEmail());
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send welcome email: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
+
 
 }
