@@ -21,9 +21,8 @@ A powerful and scalable backend service built with **Spring Boot**, tailored for
 - 🔐 **User Registration & Secure Authentication**
 - 🧑‍⚖️ **Role-based Authorization** (User / Admin)
 - ✉️ **Email Verification via Java Mail**
-- 🧰 **Robust Error Handling** & Response Management
-- 📘 **Interactive API Testing with Swagger UI**
 - 🔒 **Password Encryption** using BCrypt
+- ⚡ **Redis Integration** for Caching & Performance Optimization
 
 ---
 
