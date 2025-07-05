@@ -17,7 +17,9 @@ A powerful and scalable backend service built with **Spring Boot**, tailored for
 
 - 📝 **Create & Retrieve News Posts**
 - 👍 **Like / ❤️ Remove Like** on Posts
+- 🖼️ Media Upload (Images)
 - 💬 **Comment** on Posts
+- 🔎 Search for Posts
 - 🔐 **User Registration & Secure Authentication**
 - 🧑‍⚖️ **Role-based Authorization** (User / Admin)
 - ✉️ **Email Verification via Java Mail**
