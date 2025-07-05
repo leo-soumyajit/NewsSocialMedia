@@ -44,31 +44,6 @@ A powerful and scalable backend service built with **Spring Boot**, tailored for
 
 ---
 
-## 📁 Project Structure
-
-📦 Social-Media-Platform-Backend  
-├── 📁 .idea  
-├── 📁 src  
-│   └── 📁 main  
-│       ├── 📁 java  
-│       │   └── 📦 com.socialmedia.backend  
-│       │       ├── 📁 config  
-│       │       ├── 📁 controller  
-│       │       ├── 📁 dto  
-│       │       ├── 📁 entity  
-│       │       ├── 📁 exception  
-│       │       ├── 📁 repository  
-│       │       ├── 📁 security  
-│       │       ├── 📁 service  
-│       │       └── 📄 SocialMediaApplication.java  
-│       └── 📁 resources  
-│           ├── 📄 application.properties  
-├── 📁 test  
-├── 📄 .gitignore  
-├── 📄 README.md  
-├── 📄 pom.xml  
-
----
 
 ## 🐳 Docker & 🔧 Deployment Instructions
 pull the public image from Docker Hub:
@@ -88,7 +63,7 @@ https://newsly-v0-0-1.onrender.com/api/v1/posts
 ```
 
 🐦 Try Endpoints in Postman:
-🔗 with https://healthhub-7656.onrender.com/auth/signup
+🔗 with https://newsly-v0-0-1.onrender.com/api/v1/auth/signup
 > 🔗 View the full API reference in [Postman Collection](https://www.postman.com/newsly-0222/workspace/newsly-workspace)
 
 ---
