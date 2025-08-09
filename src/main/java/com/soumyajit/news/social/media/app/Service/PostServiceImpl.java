@@ -61,43 +61,41 @@ public class PostServiceImpl implements PostService {
         post.setImages(imageUrls);
         post.setCategory(category);
 
-
         User user = getCurrentUserWithPosts();
-        post.setUser_id(user);
-        post.setProfileImage(user.getProfileImage());
+        post.setUser_id(user); // Only store reference to user
 
         Post savedPost = postRepository.save(post);
-        PostDto postDto = modelMapper.map(savedPost, PostDto.class);
 
-        // Put individual post into cache
-        cacheManager.getCache("posts").put(savedPost.getId(), postDto);
-
-        // Evict cached post list
-        cacheManager.getCache("postList").clear();
-
-        return postDto;
+        // No caching — always map fresh from DB
+        return mapPostToDto(savedPost);
     }
 
 
 
+
+
     @Override
-    @Cacheable(value = "posts", key = "#postId")
     public PostDto getPostById(Long postId) {
         log.info("Getting Post with id: {}", postId);
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("Post not found with Id : " + postId));
-        return modelMapper.map(post, PostDto.class);
+
+        return mapPostToDto(post); // custom mapper
     }
 
+
     @Override
-    @Cacheable(value = "postList")
     public List<PostDto> getAllPosts() {
-        log.info("Getting All Posts ");
-        List<Post> post = postRepository.findAllPostsOrderedByCreationDateDesc();
-        return post.stream()
-                .map(post1 -> modelMapper.map(post1, PostDto.class))
+        log.info("Getting All Posts");
+
+        List<Post> posts = postRepository.findAllPostsOrderedByCreationDateDesc();
+
+        return posts.stream()
+                .map(this::mapPostToDto) // custom mapper
                 .collect(Collectors.toList());
     }
+
 
     @Override
     @Transactional
@@ -240,6 +238,19 @@ public class PostServiceImpl implements PostService {
         User currentUser = getCurrentUser();
         return userRepository.findByIdWithPosts(currentUser.getId()).orElseThrow(() -> new ResourceNotFound("User not found"));
     }
+
+    private PostDto mapPostToDto(Post post) {
+        PostDto dto = modelMapper.map(post, PostDto.class);
+
+        dto.setUserId(post.getUser_id().getId());
+        dto.setUserName(post.getUser_id().getName());
+        dto.setProfileImage(post.getUser_id().getProfileImage()); // Always latest
+
+        return dto;
+    }
+
+
+
 }
 
 
