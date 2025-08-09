@@ -2,6 +2,7 @@ package com.soumyajit.news.social.media.app.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.soumyajit.news.social.media.app.Dtos.CommentDtos;
 import com.soumyajit.news.social.media.app.Dtos.PostDto;
 import com.soumyajit.news.social.media.app.Entities.Post;
 import com.soumyajit.news.social.media.app.Entities.User;
@@ -66,7 +67,11 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
-        // No caching — always map fresh from DB
+        // Put individual post into cache
+        cacheManager.getCache("posts").put(savedPost.getId(), savedPost);
+
+        // Evict cached post list
+        cacheManager.getCache("postList").clear();
         return mapPostToDto(savedPost);
     }
 
@@ -75,26 +80,64 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
+    @Cacheable(value = "posts", key = "#postId")
     public PostDto getPostById(Long postId) {
         log.info("Getting Post with id: {}", postId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("Post not found with Id : " + postId));
 
-        return mapPostToDto(post); // custom mapper
+        return mapPostToDto(post);
     }
 
-
     @Override
+    @Cacheable(value = "postList")
     public List<PostDto> getAllPosts() {
         log.info("Getting All Posts");
 
         List<Post> posts = postRepository.findAllPostsOrderedByCreationDateDesc();
 
         return posts.stream()
-                .map(this::mapPostToDto) // custom mapper
+                .map(this::mapPostToDto)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Custom mapper that ensures both post and comments
+     * always have the latest profile image from their user entity.
+     */
+    private PostDto mapPostToDto(Post post) {
+        PostDto postDto = modelMapper.map(post, PostDto.class);
+
+        // Map post user details
+        if (post.getUser_id() != null) {
+            User postUser = post.getUser_id();
+            postDto.setUserName(postUser.getName());
+            postDto.setUserId(postUser.getId());
+            postDto.setProfileImage(postUser.getProfileImage());
+        }
+
+        // Map comments with latest profile image
+        List<CommentDtos> commentDtosList = post.getComments().stream()
+                .map(comment -> {
+                    CommentDtos dto = modelMapper.map(comment, CommentDtos.class);
+                    if (comment.getUser_id() != null) {
+                        User commentUser = comment.getUser_id();
+                        dto.setUserName(commentUser.getName());
+                        dto.setUserId(commentUser.getId());
+                        dto.setProfileImage(commentUser.getProfileImage());
+                    }
+                    dto.setPostId(post.getId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        postDto.setComments(commentDtosList);
+
+        return postDto;
+    }
+
+
 
 
     @Override
@@ -239,15 +282,6 @@ public class PostServiceImpl implements PostService {
         return userRepository.findByIdWithPosts(currentUser.getId()).orElseThrow(() -> new ResourceNotFound("User not found"));
     }
 
-    private PostDto mapPostToDto(Post post) {
-        PostDto dto = modelMapper.map(post, PostDto.class);
-
-        dto.setUserId(post.getUser_id().getId());
-        dto.setUserName(post.getUser_id().getName());
-        dto.setProfileImage(post.getUser_id().getProfileImage()); // Always latest
-
-        return dto;
-    }
 
 
 

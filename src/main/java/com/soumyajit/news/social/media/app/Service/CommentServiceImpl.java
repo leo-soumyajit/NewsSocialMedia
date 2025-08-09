@@ -34,6 +34,7 @@ public class CommentServiceImpl implements CommentService {
     })
     public CommentDtos addComment(CommentRequestDtos commentRequestDtos, Long postId) {
         log.info("Adding comments in a Post with Id :{}", postId);
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFound("Post not found with Id : " + postId));
 
@@ -42,13 +43,24 @@ public class CommentServiceImpl implements CommentService {
         Comments comments = modelMapper.map(commentRequestDtos, Comments.class);
         comments.setPost_id(post);
         comments.setUser_id(user);
-        comments.setProfileImage(user.getProfileImage());
+
+        // Remove storing profileImage in DB to avoid outdated copies
+        comments.setProfileImage(null);
+
         post.getComments().add(comments);
         comments = commentRepository.save(comments);
         postRepository.save(post);
 
-        return modelMapper.map(comments, CommentDtos.class);
+        // Build DTO manually to always get the latest user profile image
+        CommentDtos commentDtos = modelMapper.map(comments, CommentDtos.class);
+        commentDtos.setUserName(user.getName());
+        commentDtos.setUserId(user.getId());
+        commentDtos.setProfileImage(user.getProfileImage());
+        commentDtos.setPostId(postId);
+
+        return commentDtos;
     }
+
 
 
 
