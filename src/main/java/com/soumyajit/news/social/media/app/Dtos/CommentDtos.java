@@ -15,5 +15,6 @@ public class CommentDtos {
     private LocalDateTime createdAt;
     private String userName;
     private Long userId;
+    private String profileImage;
     private Long postId;
 }

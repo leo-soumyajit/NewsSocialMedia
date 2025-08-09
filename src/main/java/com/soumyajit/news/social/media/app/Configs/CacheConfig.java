@@ -42,7 +42,7 @@ public class CacheConfig {
 
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith("my-redis-")
-                .entryTtl(Duration.ofSeconds(160*5))
+                .entryTtl(Duration.ofSeconds(60))
                 .enableTimeToIdle()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))

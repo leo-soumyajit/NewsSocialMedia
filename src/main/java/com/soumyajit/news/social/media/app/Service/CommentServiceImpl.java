@@ -42,6 +42,7 @@ public class CommentServiceImpl implements CommentService {
         Comments comments = modelMapper.map(commentRequestDtos, Comments.class);
         comments.setPost_id(post);
         comments.setUser_id(user);
+        comments.setProfileImage(user.getProfileImage());
         post.getComments().add(comments);
         comments = commentRepository.save(comments);
         postRepository.save(post);
@@ -103,6 +104,7 @@ public class CommentServiceImpl implements CommentService {
         if(!comments.getPost_id().getId().equals(postId)){
             throw new RuntimeException("Comment does not belong to the specified post");
         }
+
 
         comments.setContent(commentRequestDtos.getContent()); //set new comment
         post.getComments().add(comments); //add that comment into post

@@ -20,7 +20,7 @@ public class Comments {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 800)
     private String content;
 
     @CreationTimestamp
@@ -32,6 +32,8 @@ public class Comments {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user_id;
+
+    private String profileImage;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
