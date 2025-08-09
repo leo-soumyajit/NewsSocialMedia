@@ -2,6 +2,7 @@ package com.soumyajit.news.social.media.app.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.soumyajit.news.social.media.app.Dtos.UserProfileChangeDTO;
 import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Entities.User;
 import com.soumyajit.news.social.media.app.Exception.ResourceNotFound;
@@ -31,33 +32,19 @@ public class UserProfileServiceImpl implements UserProfileService{
     private final Cloudinary cloudinary;
 
 
-    @CacheEvict(value = "userProfiles", key = "#result.email", condition = "#result != null")
-    public UserProfileDTOS updateUserProfile(Map<String, Object> updates, MultipartFile profilePicture) throws IOException {
+//    @CacheEvict(value = "userProfiles", key = "#result.email", condition = "#result != null")
+    public UserProfileDTOS updateUserProfile(UserProfileChangeDTO userProfileChangeDTO){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<String> restrictedFields = Arrays.asList("email", "password");
-
-        updates.forEach((key, value) -> {
-            if (restrictedFields.contains(key)) {
-                throw new IllegalArgumentException("email and password cannot be updated through this method");
-            }
-            Field fieldToBeSaved = org.springframework.data.util.ReflectionUtils.findRequiredField(User.class, key);
-            fieldToBeSaved.setAccessible(true);
-            ReflectionUtils.setField(fieldToBeSaved, user, value);
-        });
-
-        if (profilePicture != null && !profilePicture.isEmpty()) {
-            Map uploadResult = cloudinary.uploader().upload(profilePicture.getBytes(), ObjectUtils.emptyMap());
-            String profilePictureUrl = uploadResult.get("url").toString();
-            user.setProfileImage(profilePictureUrl);
-        }
+        user.setBio(userProfileChangeDTO.getBio());
+        user.setName(userProfileChangeDTO.getName());
 
         User updatedUser = userRepository.save(user);
         return modelMapper.map(updatedUser, UserProfileDTOS.class);
     }
 
     @Override
-    @Cacheable(value = "userProfiles", key = "#username")
+//    @Cacheable(value = "userProfiles", key = "#username")
     public UserProfileDTOS getCurrentUserProfile(String username) {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFound("User not found with username " + username));
@@ -71,6 +58,19 @@ public class UserProfileServiceImpl implements UserProfileService{
         return user.stream()
                 .map(user1 -> modelMapper.map(user1, UserProfileDTOS.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserProfileDTOS updateUserProfilePic(MultipartFile profilePicture) throws IOException {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            Map uploadResult = cloudinary.uploader().upload(profilePicture.getBytes(), ObjectUtils.emptyMap());
+            String profilePictureUrl = uploadResult.get("url").toString();
+            user.setProfileImage(profilePictureUrl);
+        }
+        User updatedUser = userRepository.save(user);
+        return modelMapper.map(updatedUser, UserProfileDTOS.class);
+
     }
 
 }

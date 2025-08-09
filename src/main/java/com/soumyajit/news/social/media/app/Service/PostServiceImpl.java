@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostDto createPost(String title, String description, List<MultipartFile> images) throws IOException {
+    public PostDto createPost(String title, String description, List<MultipartFile> images, String category) throws IOException {
         List<String> imageUrls = new ArrayList<>();
 
         if (images != null) {
@@ -59,9 +59,12 @@ public class PostServiceImpl implements PostService {
         post.setLikes(0L);
         post.setComments(new ArrayList<>());
         post.setImages(imageUrls);
+        post.setCategory(category);
+
 
         User user = getCurrentUserWithPosts();
         post.setUser_id(user);
+        post.setProfileImage(user.getProfileImage());
 
         Post savedPost = postRepository.save(post);
         PostDto postDto = modelMapper.map(savedPost, PostDto.class);
@@ -154,7 +157,7 @@ public class PostServiceImpl implements PostService {
             @CacheEvict(value = "posts", key = "#postId"),
             @CacheEvict(value = "postList", allEntries = true)
     })
-    public PostDto updatePostById(Long postId, String title, String description, List<MultipartFile> images) throws IOException {
+    public PostDto updatePostById(Long postId, String title, String description) throws IOException {
         log.info("Updating Post with id: {}", postId);
 
         Post post = postRepository.findById(postId)
@@ -167,17 +170,9 @@ public class PostServiceImpl implements PostService {
         }
 
         List<String> imageUrls = new ArrayList<>();
-        if (images != null) {
-            for (MultipartFile file : images) {
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-                String imageUrl = uploadResult.get("url").toString();
-                imageUrls.add(imageUrl);
-            }
-        }
 
         post.setTitle(title);
         post.setDescription(description);
-        post.setImages(imageUrls);
 
         Post updatedPost = postRepository.save(post);
         PostDto postDto = modelMapper.map(updatedPost, PostDto.class);
@@ -192,6 +187,17 @@ public class PostServiceImpl implements PostService {
 
         return postDto;
     }
+
+
+    public List<PostDto> getPostsByCategory(String category) {
+        log.info("Getting Posts for category: {}", category);
+        List<Post> posts = postRepository.findByCategoryIgnoreCaseOrderByCreatedAtDesc(category);
+        return posts.stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .toList();
+    }
+
+
 
 
 
@@ -235,3 +241,6 @@ public class PostServiceImpl implements PostService {
         return userRepository.findByIdWithPosts(currentUser.getId()).orElseThrow(() -> new ResourceNotFound("User not found"));
     }
 }
+
+
+

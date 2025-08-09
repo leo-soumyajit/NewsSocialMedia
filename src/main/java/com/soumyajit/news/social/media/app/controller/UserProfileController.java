@@ -1,5 +1,6 @@
 package com.soumyajit.news.social.media.app.controller;
 
+import com.soumyajit.news.social.media.app.Dtos.UserProfileChangeDTO;
 import com.soumyajit.news.social.media.app.Dtos.UserProfileDTOS;
 import com.soumyajit.news.social.media.app.Service.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -29,15 +30,21 @@ public class UserProfileController {
 
 
 
-    @PatchMapping(value = "/update",consumes = {"multipart/form-data"})
-    public ResponseEntity<UserProfileDTOS> updateUserProfile(@RequestParam Map<String, Object> updates,
-                                                             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) throws IOException {
-        return ResponseEntity.ok(userProfileService.updateUserProfile(updates, profilePicture));
+    @PutMapping("/update")
+    public ResponseEntity<UserProfileDTOS> updateUserProfile(@RequestBody UserProfileChangeDTO userProfileChangeDTO
+                                                             ){
+        return ResponseEntity.ok(userProfileService.updateUserProfile(userProfileChangeDTO));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<UserProfileDTOS>>searchUserByName(@RequestParam String name){
         return ResponseEntity.ok(userProfileService.searchUserByName(name));
+    }
+
+    @PutMapping(value = "/updateImage",consumes = {"multipart/form-data"})
+    public ResponseEntity<UserProfileDTOS> updateUserProfilePic(
+                                                             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) throws IOException {
+        return ResponseEntity.ok(userProfileService.updateUserProfilePic(profilePicture));
     }
 
 

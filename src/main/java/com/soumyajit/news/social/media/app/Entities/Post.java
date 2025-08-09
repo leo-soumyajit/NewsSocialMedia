@@ -21,10 +21,10 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 1000)
     private String title;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false,length = 1500,columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection
@@ -42,11 +42,15 @@ public class Post {
     @JsonIgnore
     private User user_id;
 
+    private String profileImage;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    private String category;
 
 
 

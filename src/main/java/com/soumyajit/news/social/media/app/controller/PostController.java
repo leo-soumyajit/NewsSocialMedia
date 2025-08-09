@@ -20,8 +20,9 @@ public class PostController {
     @PostMapping(value = "/createPost", consumes = {"multipart/form-data"})
     public ResponseEntity<PostDto> createPost(@RequestParam("title") String title,
                                               @RequestParam("description") String description,
+                                              @RequestParam("category") String category,
                                               @RequestParam(value = "imageFiles", required = false) List<MultipartFile> images) throws IOException {
-        return ResponseEntity.ok(postService.createPost(title, description, images));
+        return ResponseEntity.ok(postService.createPost(title, description, images, category));
     }
 
     @GetMapping("/{postId}")
@@ -47,12 +48,11 @@ public class PostController {
     }
 
 
-    @PutMapping(value = "/{postId}/update" ,consumes = {"multipart/form-data"})
+    @PutMapping(value = "/{postId}/update" )
     public ResponseEntity<PostDto> updatePostById(@PathVariable Long postId,
                                                   @RequestParam("title") String title,
-                                                  @RequestParam("description") String description,
-                                                  @RequestParam(value = "imageFiles", required = false) List<MultipartFile> images) throws IOException {
-        return ResponseEntity.ok(postService.updatePostById(postId,title,description,images));
+                                                  @RequestParam("description") String description) throws IOException {
+        return ResponseEntity.ok(postService.updatePostById(postId,title,description));
     }
     @DeleteMapping("/{postId}/delete")
     public ResponseEntity<Void> deletePostById(@PathVariable Long postId){
@@ -63,6 +63,43 @@ public class PostController {
     @GetMapping("/search")
     public ResponseEntity<List<PostDto>>searchPosts(@RequestParam String keyword){
         return ResponseEntity.ok(postService.searchPosts(keyword));
+    }
+
+
+//    category related
+    @GetMapping("/category/sports")
+    public ResponseEntity<List<PostDto>> getSportsPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("sports"));
+    }
+
+    @GetMapping("/category/education")
+    public ResponseEntity<List<PostDto>> getEducationPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("education"));
+    }
+
+    @GetMapping("/category/politics")
+    public ResponseEntity<List<PostDto>> getPoliticsPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("politics"));
+    }
+
+    @GetMapping("/category/india")
+    public ResponseEntity<List<PostDto>> getIndiaPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("india"));
+    }
+
+    @GetMapping("/category/foreign")
+    public ResponseEntity<List<PostDto>> getForeignPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("foreign"));
+    }
+
+    @GetMapping("/category/health")
+    public ResponseEntity<List<PostDto>> getHealthPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("health"));
+    }
+
+    @GetMapping("/category/tech")
+    public ResponseEntity<List<PostDto>> getTechPosts() {
+        return ResponseEntity.ok(postService.getPostsByCategory("tech"));
     }
 
 }

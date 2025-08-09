@@ -16,7 +16,9 @@ public class PostDto {
     private List<String> images;
     private String userName;
     private Long userId;
+    private String profileImage;
     private Long likes;
     private LocalDateTime createdAt;
     private List<CommentDtos> comments;
+    private String category;
 }

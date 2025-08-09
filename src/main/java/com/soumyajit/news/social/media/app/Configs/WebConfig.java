@@ -20,7 +20,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+                        .allowedOrigins("https://5901fc8e-e6d1-4bb8-a60b-5c43364ae5af.lovableproject.com", "http://localhost:8080", "http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true)
@@ -35,7 +35,7 @@ public class WebConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5500"));
+        config.setAllowedOrigins(Arrays.asList("https://5901fc8e-e6d1-4bb8-a60b-5c43364ae5af.lovableproject.com", "http://localhost:5173","http://localhost:8080"));
         config.addAllowedHeader("*");
         config.setMaxAge(3600L);
 

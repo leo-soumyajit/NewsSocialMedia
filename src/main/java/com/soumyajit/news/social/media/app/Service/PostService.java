@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PostService {
-    PostDto createPost(String title ,  String description ,List<MultipartFile> imageFiles) throws IOException;
+    PostDto createPost(String title ,  String description ,List<MultipartFile> imageFiles, String category) throws IOException;
 
     PostDto getPostById(Long postId);
 
@@ -15,7 +15,7 @@ public interface PostService {
 
     PostDto postLikeById(Long postId);
 
-    PostDto updatePostById(Long postId,String title ,  String description,List<MultipartFile> imageFiles) throws IOException;
+    PostDto updatePostById(Long postId,String title ,  String description) throws IOException;
 
     void deletePostById(Long postId);
 
@@ -23,4 +23,6 @@ public interface PostService {
     List<PostDto> searchPosts(String keyword);
 
     PostDto removeLikeById(Long postId);
+
+    List<PostDto> getPostsByCategory(String category);
 }
