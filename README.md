@@ -1,4 +1,4 @@
-# 📢 Social Media Platform API (Backend)
+# 📢 THE PEOPLE'S PRESS API (Backend)
 
 A powerful and scalable backend service built with **Spring Boot**, tailored for a **news-focused social media platform**. This **RESTful API** allows users to create, engage, and interact with posts, manage likes and comments, and ensures secure access through robust authentication and authorization mechanisms.
 
