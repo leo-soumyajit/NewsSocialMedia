@@ -4,6 +4,11 @@ A powerful and scalable backend service built with **Spring Boot**, tailored for
 
 ---
 
+This is the **frontend** code for **The People's Press**, a modern news and social platform built with **React**, **TailwindCSS**, and **Vite**, allowing users to read posts, comment, share, and manage their own profiles in a sleek UI.
+> 🔗 Github Repo [the-peoples-press-frontend](https://github.com/leo-soumyajit/the-peoples-press-frontend)
+
+---
+
 <div align="center">
   <img src="https://forthebadge.com/images/badges/built-with-love.svg" />&nbsp;
   <img src="https://forthebadge.com/images/badges/uses-brains.svg" />&nbsp;
