@@ -37,16 +37,16 @@ public class OtpService {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom("newssocialmedia2025@gmail.com");
+            helper.setFrom("thepeoplespress8@gmail.com");
             helper.setTo(email);
-            helper.setSubject("🔐 Your OTP for Newsly");
+            helper.setSubject("🔐 Your OTP for THE PEOPLE'S PRESS");
 
             String htmlContent = """
             <html>
             <body style="font-family: Arial, sans-serif; background-color: #f5f7fa; padding: 20px; color: #333;">
                 <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <div style="background-color: #1e88e5; padding: 20px; border-radius: 8px 8px 0 0; color: white;">
-                        <h2 style="margin: 0;">📰 Welcome to Newsly</h2>
+                        <h2 style="margin: 0;">📰 Welcome to THE PEOPLE'S PRESS</h2>
                         <p style="margin: 0;">Your daily dose of real-time news & opinions.</p>
                     </div>
                     <div style="padding: 30px;">
@@ -59,9 +59,9 @@ public class OtpService {
                         <p>If you didn’t request this, you can safely ignore this email.</p>
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
                         <p style="font-size: 12px; color: #888;">
-                            You’re receiving this email because your email was used to register on <strong>Newsly</strong>.
+                            You’re receiving this email because your email was used to register on <strong>THE PEOPLE'S PRESS</strong>.
                         </p>
-                        <p style="font-size: 12px; color: #888;">Need help? Contact us at newssocialmedia2025@gmail.com</p>
+                        <p style="font-size: 12px; color: #888;">Need help? Contact us at thepeoplespress8@gmail.com</p>
                     </div>
                 </div>
             </body>

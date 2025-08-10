@@ -38,7 +38,7 @@ public class EmailService {
                     <p style="font-size: 13px; color: #888; text-align: center;">
                         Didn't request this? You can safely ignore this message.
                     </p>
-                    <p style="text-align: center; font-size: 14px; color: #999;">&copy; 2025 Newsly. All rights reserved.</p>
+                    <p style="text-align: center; font-size: 14px; color: #999;">&copy; 2025 THE PEOPLE'S PRESS. All rights reserved.</p>
                 </div>
             </body>
         </html>

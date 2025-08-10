@@ -67,11 +67,6 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
-        // Put individual post into cache
-        cacheManager.getCache("posts").put(savedPost.getId(), savedPost);
-
-        // Evict cached post list
-        cacheManager.getCache("postList").clear();
         return mapPostToDto(savedPost);
     }
 

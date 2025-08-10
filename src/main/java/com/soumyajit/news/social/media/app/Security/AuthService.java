@@ -137,12 +137,12 @@ public class AuthService {
         </head>
         <body style="background-color:#f5f7fb;">
             <div class="email-container">
-                <h2 class="header">🎉 Welcome to Newsly!</h2>
+                <h2 class="header">🎉 Welcome to THE PEOPLE'S PRESS!</h2>
                 <p style="text-align:center; font-size: 16px;">Your social hub for the latest news 📰</p>
 
                 <p>Hi <strong>{{name}}</strong>,</p>
 
-                <p>Welcome to <strong>Newsly</strong>! We're happy to have you on board. This is a place to discover and share the latest updates happening around the world.</p>
+                <p>Welcome to <strong>THE PEOPLE'S PRESS</strong>! We're happy to have you on board. This is a place to discover and share the latest updates happening around the world.</p>
 
                 <ul>
                     <li>📰 Post and discover current events</li>
@@ -151,12 +151,12 @@ public class AuthService {
                 </ul>
 
                 <p>Start your journey now:</p>
-                <a class="button" href="https://newsly.com">🌐 Explore Newsly</a>
+                <a class="button" href="https://newsly.com">🌐 Explore THE PEOPLE'S PRESS</a>
 
-                <p style="margin-top: 30px;">Cheers,<br>The Newsly Team 💙</p>
+                <p style="margin-top: 30px;">Cheers,<br>The THE PEOPLE'S PRESS Team 💙</p>
 
                 <div class="footer">
-                    You received this email because you joined Newsly.<br>
+                    You received this email because you joined THE PEOPLE'S PRESS.<br>
                     If you didn’t sign up, you can safely ignore this message.
                 </div>
             </div>
@@ -167,7 +167,7 @@ public class AuthService {
             String htmlContent = htmlTemplate.replace("{{name}}", signUpRequestDTOS.getName());
 
             helper.setTo(signUpRequestDTOS.getEmail());
-            helper.setSubject("🎉 Welcome to Newsly!");
+            helper.setSubject("🎉 Welcome to THE PEOPLE'S PRESS!");
             helper.setText(htmlContent, true);
 
             mailSender.send(message);

@@ -96,9 +96,9 @@ public class PasswordResetController {
                     </p>
                     <hr style="margin: 20px 0;">
                     <p style="font-size: 13px; color: #888; text-align: center;">
-                        Stay secure and thank you for using Newsly.
+                        Stay secure and thank you for using THE PEOPLE'S PRESS.
                     </p>
-                    <p style="text-align: center; font-size: 14px; color: #999;">&copy; 2025 Newsly. All rights reserved.</p>
+                    <p style="text-align: center; font-size: 14px; color: #999;">&copy; 2025 THE PEOPLE'S PRESS. All rights reserved.</p>
                 </div>
             </body>
         </html>
