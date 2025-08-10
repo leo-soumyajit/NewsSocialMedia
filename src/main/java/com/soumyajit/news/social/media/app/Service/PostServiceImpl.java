@@ -63,15 +63,12 @@ public class PostServiceImpl implements PostService {
         post.setCategory(category);
 
         User user = getCurrentUserWithPosts();
-        post.setUser_id(user); // Only store reference to user
+        post.setUser_id(user);
 
         Post savedPost = postRepository.save(post);
 
         return mapPostToDto(savedPost);
     }
-
-
-
 
 
     @Override
@@ -97,10 +94,6 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Custom mapper that ensures both post and comments
-     * always have the latest profile image from their user entity.
-     */
     private PostDto mapPostToDto(Post post) {
         PostDto postDto = modelMapper.map(post, PostDto.class);
 
@@ -112,7 +105,6 @@ public class PostServiceImpl implements PostService {
             postDto.setProfileImage(postUser.getProfileImage());
         }
 
-        // Map comments with latest profile image
         List<CommentDtos> commentDtosList = post.getComments().stream()
                 .map(comment -> {
                     CommentDtos dto = modelMapper.map(comment, CommentDtos.class);
